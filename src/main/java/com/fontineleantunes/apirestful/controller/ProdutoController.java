@@ -1,8 +1,8 @@
-package com.carlosribeiro.apirestful.controller;
+package com.fontineleantunes.apirestful.controller;
 
-import com.carlosribeiro.apirestful.model.Produto;
-import com.carlosribeiro.apirestful.model.ProdutoDTO;
-import com.carlosribeiro.apirestful.service.ProdutoService;
+import com.fontineleantunes.apirestful.model.Produto;
+import com.fontineleantunes.apirestful.model.ProdutoDTO;
+import com.fontineleantunes.apirestful.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

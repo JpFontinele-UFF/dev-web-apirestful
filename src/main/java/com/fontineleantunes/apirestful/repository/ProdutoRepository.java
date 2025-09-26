@@ -1,6 +1,6 @@
-package com.carlosribeiro.apirestful.repository;
+package com.fontineleantunes.apirestful.repository;
 
-import com.carlosribeiro.apirestful.model.Produto;
+import com.fontineleantunes.apirestful.model.Produto;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

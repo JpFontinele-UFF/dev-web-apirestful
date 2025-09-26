@@ -1,9 +1,9 @@
-package com.carlosribeiro.apirestful;
+package com.fontineleantunes.apirestful;
 
-import com.carlosribeiro.apirestful.model.Categoria;
-import com.carlosribeiro.apirestful.model.Produto;
-import com.carlosribeiro.apirestful.repository.CategoriaRepository;
-import com.carlosribeiro.apirestful.repository.ProdutoRepository;
+import com.fontineleantunes.apirestful.model.Categoria;
+import com.fontineleantunes.apirestful.model.Produto;
+import com.fontineleantunes.apirestful.repository.CategoriaRepository;
+import com.fontineleantunes.apirestful.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

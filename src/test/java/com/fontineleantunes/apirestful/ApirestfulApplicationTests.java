@@ -1,4 +1,4 @@
-package com.carlosribeiro.apirestful;
+package com.fontineleantunes.apirestful;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

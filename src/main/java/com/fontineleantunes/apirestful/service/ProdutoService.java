@@ -1,8 +1,8 @@
-package com.carlosribeiro.apirestful.service;
+package com.fontineleantunes.apirestful.service;
 
-import com.carlosribeiro.apirestful.exception.EntidadeNaoEncontradaException;
-import com.carlosribeiro.apirestful.model.Produto;
-import com.carlosribeiro.apirestful.repository.ProdutoRepository;
+import com.fontineleantunes.apirestful.exception.EntidadeNaoEncontradaException;
+import com.fontineleantunes.apirestful.model.Produto;
+import com.fontineleantunes.apirestful.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

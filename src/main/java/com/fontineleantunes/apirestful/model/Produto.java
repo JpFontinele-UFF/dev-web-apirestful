@@ -1,4 +1,4 @@
-package com.carlosribeiro.apirestful.model;
+package com.fontineleantunes.apirestful.model;
 
 import jakarta.persistence.*;
 import lombok.*;

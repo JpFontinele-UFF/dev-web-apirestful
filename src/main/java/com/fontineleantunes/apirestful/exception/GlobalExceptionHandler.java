@@ -1,4 +1,4 @@
-package com.carlosribeiro.apirestful.exception;
+package com.fontineleantunes.apirestful.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

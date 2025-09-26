@@ -1,4 +1,4 @@
-package com.carlosribeiro.apirestful.model;
+package com.fontineleantunes.apirestful.model;
 
 public record ProdutoDTO(Long id, String nome) {
 }

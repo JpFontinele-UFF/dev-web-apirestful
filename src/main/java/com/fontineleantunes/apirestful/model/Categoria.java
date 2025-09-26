@@ -1,4 +1,4 @@
-package com.carlosribeiro.apirestful.model;
+package com.fontineleantunes.apirestful.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
