@@ -2,9 +2,11 @@ package com.fontineleantunes.apirestful.controller;
 
 import com.fontineleantunes.apirestful.model.Turma;
 import com.fontineleantunes.apirestful.model.Professor;
+import com.fontineleantunes.apirestful.model.Disciplina;
 import com.fontineleantunes.apirestful.dto.TurmaDTO;
 import com.fontineleantunes.apirestful.service.TurmaService;
 import com.fontineleantunes.apirestful.service.ProfessorService;
+import com.fontineleantunes.apirestful.service.DisciplinaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ public class TurmaController {
     private TurmaService turmaService;
     @Autowired
     private ProfessorService professorService;
+    @Autowired
+    private DisciplinaService disciplinaService;
 
 
     @PostMapping
@@ -28,10 +32,20 @@ public class TurmaController {
         if (professor == null) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Professor não encontrado", turmaDTO));
         }
+        
+        Disciplina disciplina = null;
+        if (turmaDTO.getDisciplinaId() != null) {
+            disciplina = disciplinaService.buscarPorId(turmaDTO.getDisciplinaId());
+        }
+        if (disciplina == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Disciplina não encontrada", turmaDTO));
+        }
+        
         Turma turma = new Turma();
         turma.setAno(turmaDTO.getAno());
         turma.setPeriodo(turmaDTO.getPeriodo());
         turma.setProfessor(professor);
+        turma.setDisciplina(disciplina);
         Turma saved = turmaService.save(turma);
         return ResponseEntity.ok(new ApiResponse(true, "Turma cadastrada com sucesso", saved));
     }
