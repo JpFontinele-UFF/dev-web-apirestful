@@ -4,6 +4,7 @@ import com.fontineleantunes.apirestful.model.Turma;
 import com.fontineleantunes.apirestful.model.Professor;
 import com.fontineleantunes.apirestful.model.Disciplina;
 import com.fontineleantunes.apirestful.dto.TurmaDTO;
+import com.fontineleantunes.apirestful.service.InscricaoService;
 import com.fontineleantunes.apirestful.service.TurmaService;
 import com.fontineleantunes.apirestful.service.ProfessorService;
 import com.fontineleantunes.apirestful.service.DisciplinaService;
@@ -17,6 +18,8 @@ public class TurmaController {
 
     @Autowired
     private TurmaService turmaService;
+    @Autowired
+    private InscricaoService inscricaoService;
     @Autowired
     private ProfessorService professorService;
     @Autowired
@@ -58,6 +61,35 @@ public class TurmaController {
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Não é possível remover a turma pois ela possui inscrições vinculadas.", null));
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> listAll() {
+        return ResponseEntity.ok(new ApiResponse(true, "Lista de turmas", turmaService.findAll()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return turmaService.findById(id).map(turma -> {
+            com.fontineleantunes.apirestful.dto.TurmaDetailsDTO dto = new com.fontineleantunes.apirestful.dto.TurmaDetailsDTO();
+            dto.setId(turma.getId());
+            dto.setAno(turma.getAno());
+            dto.setPeriodo(turma.getPeriodo());
+            if (turma.getDisciplina() != null) dto.setDisciplinaNome(turma.getDisciplina().getNome());
+            if (turma.getProfessor() != null) dto.setProfessorNome(turma.getProfessor().getNome());
+
+            java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaId(turma.getId());
+            java.util.List<com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito> alunos = new java.util.ArrayList<>();
+            for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
+                if (ins.getAluno() != null) {
+                    alunos.add(new com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito(
+                            ins.getAluno().getId(), ins.getAluno().getNome(), ins.getAluno().getEmail()
+                    ));
+                }
+            }
+            dto.setAlunos(alunos);
+            return ResponseEntity.ok(new ApiResponse(true, "Turma encontrada", dto));
+        }).orElse(ResponseEntity.status(404).body(new ApiResponse(false, "Turma n\u00e3o encontrada", null)));
     }
 
     // Classe interna para resposta padrão

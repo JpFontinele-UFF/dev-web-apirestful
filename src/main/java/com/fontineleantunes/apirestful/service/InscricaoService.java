@@ -4,6 +4,8 @@ import com.fontineleantunes.apirestful.model.Inscricao;
 import com.fontineleantunes.apirestful.repository.InscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import com.fontineleantunes.apirestful.repository.InscricaoRepository;
 
 @Service
 public class InscricaoService {
@@ -16,5 +18,10 @@ public class InscricaoService {
 
     public void deleteById(Long id) {
         inscricaoRepository.deleteById(id);
+    }
+
+    // Retorna todas as inscricoes associadas a uma turma
+    public List<com.fontineleantunes.apirestful.model.Inscricao> findByTurmaId(Long turmaId) {
+        return inscricaoRepository.findByTurma_Id(turmaId);
     }
 }
