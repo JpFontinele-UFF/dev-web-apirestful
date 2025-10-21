@@ -83,7 +83,10 @@ public class TurmaController {
             for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
                 if (ins.getAluno() != null) {
                     alunos.add(new com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito(
-                            ins.getAluno().getId(), ins.getAluno().getNome(), ins.getAluno().getEmail()
+                            ins.getAluno().getId(),
+                            ins.getAluno().getNome(),
+                            ins.getAluno().getEmail(),
+                            ins.getAluno().getCpf()
                     ));
                 }
             }
