@@ -25,7 +25,6 @@ public class TurmaController {
     @Autowired
     private DisciplinaService disciplinaService;
 
-
     @PostMapping
     public ResponseEntity<?> create(@RequestBody TurmaDTO turmaDTO) {
         Professor professor = null;
@@ -35,7 +34,7 @@ public class TurmaController {
         if (professor == null) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Professor não encontrado", turmaDTO));
         }
-        
+
         Disciplina disciplina = null;
         if (turmaDTO.getDisciplinaId() != null) {
             disciplina = disciplinaService.buscarPorId(turmaDTO.getDisciplinaId());
@@ -43,7 +42,7 @@ public class TurmaController {
         if (disciplina == null) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Disciplina não encontrada", turmaDTO));
         }
-        
+
         Turma turma = new Turma();
         turma.setAno(turmaDTO.getAno());
         turma.setPeriodo(turmaDTO.getPeriodo());
@@ -82,17 +81,33 @@ public class TurmaController {
             java.util.List<com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito> alunos = new java.util.ArrayList<>();
             for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
                 if (ins.getAluno() != null) {
+                    
+                    // 👈 ALTERAÇÃO AQUI (passando 'ins.getId()' como primeiro parâmetro)
                     alunos.add(new com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito(
-                            ins.getAluno().getId(),
-                            ins.getAluno().getNome(),
-                            ins.getAluno().getEmail(),
-                            ins.getAluno().getCpf()
+                        ins.getId(), 
+                        ins.getAluno().getId(),
+                        ins.getAluno().getNome(),
+                        ins.getAluno().getEmail(),
+                        ins.getAluno().getCpf()
                     ));
                 }
             }
             dto.setAlunos(alunos);
             return ResponseEntity.ok(new ApiResponse(true, "Turma encontrada", dto));
-        }).orElse(ResponseEntity.status(404).body(new ApiResponse(false, "Turma n\u00e3o encontrada", null)));
+        }).orElse(ResponseEntity.status(404).body(new ApiResponse(false, "Turma não encontrada", null)));
+    }
+
+    // Novo endpoint para retornar todos os alunos de uma turma
+    @GetMapping("/{id}/alunos")
+    public ResponseEntity<?> getAlunosPorTurma(@PathVariable Long id) {
+        java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaId(id);
+        java.util.List<com.fontineleantunes.apirestful.model.Aluno> alunos = new java.util.ArrayList<>();
+        for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
+            if (ins.getAluno() != null) {
+                alunos.add(ins.getAluno());
+            }
+        }
+        return ResponseEntity.ok(alunos);
     }
 
     // Classe interna para resposta padrão
