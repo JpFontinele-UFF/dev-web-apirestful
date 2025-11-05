@@ -17,11 +17,7 @@ import java.time.LocalDateTime;
 @SpringBootApplication
 public class ApirestfulApplication {
 
-
-
     public static void main(String[] args) {
         SpringApplication.run(ApirestfulApplication.class, args);
     }
-
-    // Nenhuma interface de console, apenas REST API disponível.
 }

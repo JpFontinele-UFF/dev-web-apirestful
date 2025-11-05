@@ -81,8 +81,6 @@ public class TurmaController {
             java.util.List<com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito> alunos = new java.util.ArrayList<>();
             for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
                 if (ins.getAluno() != null) {
-                    
-                    // 👈 ALTERAÇÃO AQUI (passando 'ins.getId()' como primeiro parâmetro)
                     alunos.add(new com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito(
                         ins.getId(), 
                         ins.getAluno().getId(),

@@ -11,7 +11,7 @@ public class TurmaDetailsDTO {
     private List<AlunoInscrito> alunos;
 
     public static class AlunoInscrito {
-        private Long inscricaoId; // 👈 ALTERAÇÃO AQUI
+        private Long inscricaoId; 
         private Long id;
         private String nome;
         private String email;
@@ -19,7 +19,6 @@ public class TurmaDetailsDTO {
 
         public AlunoInscrito() {}
 
-        // 👈 ALTERAÇÃO AQUI (adicionado 'inscricaoId' ao construtor)
         public AlunoInscrito(Long inscricaoId, Long id, String nome, String email, String cpf) { 
             this.inscricaoId = inscricaoId; 
             this.id = id; 
@@ -28,7 +27,7 @@ public class TurmaDetailsDTO {
             this.cpf = cpf; 
         }
 
-        public Long getInscricaoId() { return inscricaoId; } // 👈 ALTERAÇÃO AQUI
+        public Long getInscricaoId() { return inscricaoId; } 
         public void setInscricaoId(Long inscricaoId) { this.inscricaoId = inscricaoId; }
 
         public Long getId() { return id; }
