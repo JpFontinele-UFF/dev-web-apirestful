@@ -10,6 +10,8 @@ public class Turma {
     private Long id;
     private int ano;
     private String periodo;
+    @Column(unique = true)
+    private String codigoTurma;
 
     @ManyToOne
     private Professor professor;
@@ -31,6 +33,8 @@ public class Turma {
     public void setAno(int ano) { this.ano = ano; }
     public String getPeriodo() { return periodo; }
     public void setPeriodo(String periodo) { this.periodo = periodo; }
+    public String getCodigoTurma() { return codigoTurma; }
+    public void setCodigoTurma(String codigoTurma) { this.codigoTurma = codigoTurma; }
     public Professor getProfessor() { return professor; }
     public void setProfessor(Professor professor) { this.professor = professor; }
     public Disciplina getDisciplina() { return disciplina; }

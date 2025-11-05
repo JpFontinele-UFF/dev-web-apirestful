@@ -43,11 +43,19 @@ public class TurmaController {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Disciplina não encontrada", turmaDTO));
         }
 
+        // Verifica unicidade do codigoTurma se informado
+        if (turmaDTO.getCodigoTurma() != null && !turmaDTO.getCodigoTurma().isEmpty()) {
+            if (turmaService.findByCodigoTurma(turmaDTO.getCodigoTurma()).isPresent()) {
+                return ResponseEntity.badRequest().body(new ApiResponse(false, "codigoTurma já existe", turmaDTO));
+            }
+        }
+
         Turma turma = new Turma();
-        turma.setAno(turmaDTO.getAno());
-        turma.setPeriodo(turmaDTO.getPeriodo());
         turma.setProfessor(professor);
         turma.setDisciplina(disciplina);
+        turma.setAno(turmaDTO.getAno());
+        turma.setPeriodo(turmaDTO.getPeriodo());
+        turma.setCodigoTurma(turmaDTO.getCodigoTurma());
         Turma saved = turmaService.save(turma);
         return ResponseEntity.ok(new ApiResponse(true, "Turma cadastrada com sucesso", saved));
     }
@@ -76,6 +84,7 @@ public class TurmaController {
             dto.setPeriodo(turma.getPeriodo());
             if (turma.getDisciplina() != null) dto.setDisciplinaNome(turma.getDisciplina().getNome());
             if (turma.getProfessor() != null) dto.setProfessorNome(turma.getProfessor().getNome());
+            dto.setCodigoTurma(turma.getCodigoTurma());
 
             java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaId(turma.getId());
             java.util.List<com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito> alunos = new java.util.ArrayList<>();

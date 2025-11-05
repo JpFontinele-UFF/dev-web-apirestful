@@ -30,4 +30,8 @@ public class TurmaService {
     public void deleteById(Long id) {
         turmaRepository.deleteById(id);
     }
+
+    public Optional<Turma> findByCodigoTurma(String codigoTurma) {
+        return turmaRepository.findByCodigoTurma(codigoTurma);
+    }
 }

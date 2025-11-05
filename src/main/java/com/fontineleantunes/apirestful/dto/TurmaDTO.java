@@ -5,6 +5,7 @@ public class TurmaDTO {
     private String periodo;
     private Long professorId;
     private Long disciplinaId;
+    private String codigoTurma;
 
     public int getAno() { return ano; }
     public void setAno(int ano) { this.ano = ano; }
@@ -14,4 +15,6 @@ public class TurmaDTO {
     public void setProfessorId(Long professorId) { this.professorId = professorId; }
     public Long getDisciplinaId() { return disciplinaId; }
     public void setDisciplinaId(Long disciplinaId) { this.disciplinaId = disciplinaId; }
+    public String getCodigoTurma() { return codigoTurma; }
+    public void setCodigoTurma(String codigoTurma) { this.codigoTurma = codigoTurma; }
 }

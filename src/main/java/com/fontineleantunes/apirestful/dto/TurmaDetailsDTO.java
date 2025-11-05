@@ -8,6 +8,7 @@ public class TurmaDetailsDTO {
     private String periodo;
     private String disciplinaNome;
     private String professorNome;
+    private String codigoTurma;
     private List<AlunoInscrito> alunos;
 
     public static class AlunoInscrito {
@@ -52,6 +53,8 @@ public class TurmaDetailsDTO {
     public void setDisciplinaNome(String disciplinaNome) { this.disciplinaNome = disciplinaNome; }
     public String getProfessorNome() { return professorNome; }
     public void setProfessorNome(String professorNome) { this.professorNome = professorNome; }
+    public String getCodigoTurma() { return codigoTurma; }
+    public void setCodigoTurma(String codigoTurma) { this.codigoTurma = codigoTurma; }
     public List<AlunoInscrito> getAlunos() { return alunos; }
     public void setAlunos(List<AlunoInscrito> alunos) { this.alunos = alunos; }
 }

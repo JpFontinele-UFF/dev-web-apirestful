@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.fontineleantunes.apirestful.repository.InscricaoRepository;
+import com.fontineleantunes.apirestful.repository.InscricaoRepository;
 
 @Service
 public class InscricaoService {
