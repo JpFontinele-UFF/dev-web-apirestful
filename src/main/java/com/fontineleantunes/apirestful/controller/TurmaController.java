@@ -8,6 +8,7 @@ import com.fontineleantunes.apirestful.service.InscricaoService;
 import com.fontineleantunes.apirestful.service.TurmaService;
 import com.fontineleantunes.apirestful.service.ProfessorService;
 import com.fontineleantunes.apirestful.service.DisciplinaService;
+import com.fontineleantunes.apirestful.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class TurmaController {
     private ProfessorService professorService;
     @Autowired
     private DisciplinaService disciplinaService;
+    @Autowired
+    private AlunoService alunoService;
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody TurmaDTO turmaDTO) {
@@ -72,9 +75,16 @@ public class TurmaController {
         }
     }
 
+    // Agora suporta query param ?disciplinaId= para filtro eficiente pelo backend
     @GetMapping
-    public ResponseEntity<?> listAll() {
-        return ResponseEntity.ok(new ApiResponse(true, "Lista de turmas", turmaService.findAll()));
+    public ResponseEntity<?> listAll(@RequestParam(value = "disciplinaId", required = false) Long disciplinaId) {
+        List<Turma> turmas;
+        if (disciplinaId != null) {
+            turmas = turmaService.findByDisciplinaId(disciplinaId);
+            return ResponseEntity.ok(new ApiResponse(true, "Lista de turmas filtrada por disciplina", turmas));
+        }
+        turmas = turmaService.findAll();
+        return ResponseEntity.ok(new ApiResponse(true, "Lista de turmas", turmas));
     }
 
     @GetMapping("/{id}")
@@ -117,28 +127,35 @@ public class TurmaController {
                 alunos.add(ins.getAluno());
             }
         }
-        return ResponseEntity.ok(alunos);
+        return ResponseEntity.ok(new ApiResponse(true, "Alunos da turma", alunos));
     }
 
-    // Novo endpoint: lista de turmas por disciplina (usado pelo TurmaComboBox)
-    @GetMapping("/disciplina/{disciplinaId}")
-    public ResponseEntity<?> getTurmasPorDisciplina(@PathVariable Long disciplinaId) {
-        List<Turma> turmas = turmaService.findByDisciplinaId(disciplinaId);
-        return ResponseEntity.ok(turmas);
+    // Endpoint solicitado: lista alunos que NÃO estão inscritos na turma — otimiza chamada do front
+    @GetMapping("/{id}/alunos-nao-inscritos")
+    public ResponseEntity<?> getAlunosNaoInscritos(@PathVariable Long id) {
+        java.util.List<com.fontineleantunes.apirestful.model.Aluno> alunos = alunoService.findAlunosNotInTurma(id);
+        return ResponseEntity.ok(new ApiResponse(true, "Alunos não inscritos na turma", alunos));
     }
 
-    // Classe interna para resposta padrão
-    public static class ApiResponse {
-        private boolean success;
-        private String message;
-        private Object data;
-        public ApiResponse(boolean success, String message, Object data) {
-            this.success = success;
-            this.message = message;
-            this.data = data;
-        }
-        public boolean isSuccess() { return success; }
-        public String getMessage() { return message; }
-        public Object getData() { return data; }
-    }
-}
+     // Novo endpoint: lista de turmas por disciplina (usado pelo TurmaComboBox)
+     @GetMapping("/disciplina/{disciplinaId}")
+     public ResponseEntity<?> getTurmasPorDisciplina(@PathVariable Long disciplinaId) {
+         List<Turma> turmas = turmaService.findByDisciplinaId(disciplinaId);
+         return ResponseEntity.ok(turmas);
+     }
+
+     // Classe interna para resposta padrão
+     public static class ApiResponse {
+         private boolean success;
+         private String message;
+         private Object data;
+         public ApiResponse(boolean success, String message, Object data) {
+             this.success = success;
+             this.message = message;
+             this.data = data;
+         }
+         public boolean isSuccess() { return success; }
+         public String getMessage() { return message; }
+         public Object getData() { return data; }
+     }
+ }
