@@ -61,6 +61,13 @@ public class AlunoController {
         }
     }
 
+    // Novo endpoint: recupera alunos que NÃO estão inscritos na turma informada
+    @GetMapping("/nao-inscritos/{turmaId}")
+    public ResponseEntity<?> getAlunosNaoInscritos(@PathVariable Long turmaId) {
+        List<Aluno> alunos = alunoService.findAlunosNotInTurma(turmaId);
+        return ResponseEntity.ok(new ApiResponse(true, "Alunos não inscritos", alunos));
+    }
+
     // Classe interna para resposta padrão
     public static class ApiResponse {
         private boolean success;

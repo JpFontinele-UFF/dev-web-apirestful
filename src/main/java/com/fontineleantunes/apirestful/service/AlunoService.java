@@ -28,4 +28,9 @@ public class AlunoService {
     public void deleteById(Long id) {
         alunoRepository.deleteById(id);
     }
+
+    // Recupera alunos que NÃO estão inscritos na turma informada
+    public List<Aluno> findAlunosNotInTurma(Long turmaId) {
+        return alunoRepository.findAlunosNotInTurma(turmaId);
+    }
 }

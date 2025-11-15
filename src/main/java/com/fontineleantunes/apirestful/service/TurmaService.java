@@ -34,4 +34,9 @@ public class TurmaService {
     public Optional<Turma> findByCodigoTurma(String codigoTurma) {
         return turmaRepository.findByCodigoTurma(codigoTurma);
     }
+
+    // Recupera todas as turmas de uma disciplina
+    public List<Turma> findByDisciplinaId(Long disciplinaId) {
+        return turmaRepository.findByDisciplina_Id(disciplinaId);
+    }
 }

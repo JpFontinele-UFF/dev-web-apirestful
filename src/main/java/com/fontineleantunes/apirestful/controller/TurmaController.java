@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/turmas")
 public class TurmaController {
@@ -86,7 +88,8 @@ public class TurmaController {
             if (turma.getProfessor() != null) dto.setProfessorNome(turma.getProfessor().getNome());
             dto.setCodigoTurma(turma.getCodigoTurma());
 
-            java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaId(turma.getId());
+            // Recupera inscricoes ordenadas pelo id desc para garantir que o aluno mais recente fique no topo
+            java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaIdOrderByIdDesc(turma.getId());
             java.util.List<com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito> alunos = new java.util.ArrayList<>();
             for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
                 if (ins.getAluno() != null) {
@@ -104,10 +107,10 @@ public class TurmaController {
         }).orElse(ResponseEntity.status(404).body(new ApiResponse(false, "Turma não encontrada", null)));
     }
 
-    // Novo endpoint para retornar todos os alunos de uma turma
+    // Novo endpoint para retornar todos os alunos de uma turma (ordenados pelo id da inscrição desc)
     @GetMapping("/{id}/alunos")
     public ResponseEntity<?> getAlunosPorTurma(@PathVariable Long id) {
-        java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaId(id);
+        java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaIdOrderByIdDesc(id);
         java.util.List<com.fontineleantunes.apirestful.model.Aluno> alunos = new java.util.ArrayList<>();
         for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
             if (ins.getAluno() != null) {
@@ -115,6 +118,13 @@ public class TurmaController {
             }
         }
         return ResponseEntity.ok(alunos);
+    }
+
+    // Novo endpoint: lista de turmas por disciplina (usado pelo TurmaComboBox)
+    @GetMapping("/disciplina/{disciplinaId}")
+    public ResponseEntity<?> getTurmasPorDisciplina(@PathVariable Long disciplinaId) {
+        List<Turma> turmas = turmaService.findByDisciplinaId(disciplinaId);
+        return ResponseEntity.ok(turmas);
     }
 
     // Classe interna para resposta padrão
