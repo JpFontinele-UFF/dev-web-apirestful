@@ -31,12 +31,7 @@ public class TurmaService {
         turmaRepository.deleteById(id);
     }
 
-    public Optional<Turma> findByCodigoTurma(String codigoTurma) {
-        return turmaRepository.findByCodigoTurma(codigoTurma);
-    }
-
-    // Recupera todas as turmas de uma disciplina
-    public List<Turma> findByDisciplinaId(Long disciplinaId) {
+    public java.util.List<Turma> findByDisciplinaId(Long disciplinaId) {
         return turmaRepository.findByDisciplina_Id(disciplinaId);
     }
 }

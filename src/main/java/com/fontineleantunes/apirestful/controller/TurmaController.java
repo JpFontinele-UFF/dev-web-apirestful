@@ -8,12 +8,9 @@ import com.fontineleantunes.apirestful.service.InscricaoService;
 import com.fontineleantunes.apirestful.service.TurmaService;
 import com.fontineleantunes.apirestful.service.ProfessorService;
 import com.fontineleantunes.apirestful.service.DisciplinaService;
-import com.fontineleantunes.apirestful.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/turmas")
@@ -27,8 +24,7 @@ public class TurmaController {
     private ProfessorService professorService;
     @Autowired
     private DisciplinaService disciplinaService;
-    @Autowired
-    private AlunoService alunoService;
+
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody TurmaDTO turmaDTO) {
@@ -39,7 +35,7 @@ public class TurmaController {
         if (professor == null) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Professor não encontrado", turmaDTO));
         }
-
+        
         Disciplina disciplina = null;
         if (turmaDTO.getDisciplinaId() != null) {
             disciplina = disciplinaService.buscarPorId(turmaDTO.getDisciplinaId());
@@ -47,20 +43,12 @@ public class TurmaController {
         if (disciplina == null) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Disciplina não encontrada", turmaDTO));
         }
-
-        // Verifica unicidade do codigoTurma se informado
-        if (turmaDTO.getCodigoTurma() != null && !turmaDTO.getCodigoTurma().isEmpty()) {
-            if (turmaService.findByCodigoTurma(turmaDTO.getCodigoTurma()).isPresent()) {
-                return ResponseEntity.badRequest().body(new ApiResponse(false, "codigoTurma já existe", turmaDTO));
-            }
-        }
-
+        
         Turma turma = new Turma();
-        turma.setProfessor(professor);
-        turma.setDisciplina(disciplina);
         turma.setAno(turmaDTO.getAno());
         turma.setPeriodo(turmaDTO.getPeriodo());
-        turma.setCodigoTurma(turmaDTO.getCodigoTurma());
+        turma.setProfessor(professor);
+        turma.setDisciplina(disciplina);
         Turma saved = turmaService.save(turma);
         return ResponseEntity.ok(new ApiResponse(true, "Turma cadastrada com sucesso", saved));
     }
@@ -75,16 +63,9 @@ public class TurmaController {
         }
     }
 
-    // Agora suporta query param ?disciplinaId= para filtro eficiente pelo backend
     @GetMapping
-    public ResponseEntity<?> listAll(@RequestParam(value = "disciplinaId", required = false) Long disciplinaId) {
-        List<Turma> turmas;
-        if (disciplinaId != null) {
-            turmas = turmaService.findByDisciplinaId(disciplinaId);
-            return ResponseEntity.ok(new ApiResponse(true, "Lista de turmas filtrada por disciplina", turmas));
-        }
-        turmas = turmaService.findAll();
-        return ResponseEntity.ok(new ApiResponse(true, "Lista de turmas", turmas));
+    public ResponseEntity<?> listAll() {
+        return ResponseEntity.ok(new ApiResponse(true, "Lista de turmas", turmaService.findAll()));
     }
 
     @GetMapping("/{id}")
@@ -96,19 +77,21 @@ public class TurmaController {
             dto.setPeriodo(turma.getPeriodo());
             if (turma.getDisciplina() != null) dto.setDisciplinaNome(turma.getDisciplina().getNome());
             if (turma.getProfessor() != null) dto.setProfessorNome(turma.getProfessor().getNome());
-            dto.setCodigoTurma(turma.getCodigoTurma());
 
-            // Recupera inscricoes ordenadas pelo id desc para garantir que o aluno mais recente fique no topo
-            java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaIdOrderByIdDesc(turma.getId());
+            java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaId(turma.getId());
+
+            // Garantir ordenação desc por id da inscrição
+            inscricoes.sort(java.util.Comparator.comparing(com.fontineleantunes.apirestful.model.Inscricao::getId).reversed());
+
             java.util.List<com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito> alunos = new java.util.ArrayList<>();
             for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
                 if (ins.getAluno() != null) {
                     alunos.add(new com.fontineleantunes.apirestful.dto.TurmaDetailsDTO.AlunoInscrito(
-                        ins.getId(), 
-                        ins.getAluno().getId(),
-                        ins.getAluno().getNome(),
-                        ins.getAluno().getEmail(),
-                        ins.getAluno().getCpf()
+                            ins.getId(), // inscricaoId
+                            ins.getAluno().getId(),
+                            ins.getAluno().getNome(),
+                            ins.getAluno().getEmail(),
+                            ins.getAluno().getCpf()
                     ));
                 }
             }
@@ -117,45 +100,24 @@ public class TurmaController {
         }).orElse(ResponseEntity.status(404).body(new ApiResponse(false, "Turma não encontrada", null)));
     }
 
-    // Novo endpoint para retornar todos os alunos de uma turma (ordenados pelo id da inscrição desc)
-    @GetMapping("/{id}/alunos")
-    public ResponseEntity<?> getAlunosPorTurma(@PathVariable Long id) {
-        java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaIdOrderByIdDesc(id);
-        java.util.List<com.fontineleantunes.apirestful.model.Aluno> alunos = new java.util.ArrayList<>();
-        for (com.fontineleantunes.apirestful.model.Inscricao ins : inscricoes) {
-            if (ins.getAluno() != null) {
-                alunos.add(ins.getAluno());
-            }
+    @GetMapping("/disciplina/{disciplinaId}")
+    public ResponseEntity<?> getByDisciplina(@PathVariable Long disciplinaId) {
+        java.util.List<Turma> turmas = turmaService.findByDisciplinaId(disciplinaId);
+        return ResponseEntity.ok(new ApiResponse(true, "Turmas da disciplina", turmas));
+    }
+
+    // Classe interna para resposta padrão
+    public static class ApiResponse {
+        private boolean success;
+        private String message;
+        private Object data;
+        public ApiResponse(boolean success, String message, Object data) {
+            this.success = success;
+            this.message = message;
+            this.data = data;
         }
-        return ResponseEntity.ok(new ApiResponse(true, "Alunos da turma", alunos));
+        public boolean isSuccess() { return success; }
+        public String getMessage() { return message; }
+        public Object getData() { return data; }
     }
-
-    // Endpoint solicitado: lista alunos que NÃO estão inscritos na turma — otimiza chamada do front
-    @GetMapping("/{id}/alunos-nao-inscritos")
-    public ResponseEntity<?> getAlunosNaoInscritos(@PathVariable Long id) {
-        java.util.List<com.fontineleantunes.apirestful.model.Aluno> alunos = alunoService.findAlunosNotInTurma(id);
-        return ResponseEntity.ok(new ApiResponse(true, "Alunos não inscritos na turma", alunos));
-    }
-
-     // Novo endpoint: lista de turmas por disciplina (usado pelo TurmaComboBox)
-     @GetMapping("/disciplina/{disciplinaId}")
-     public ResponseEntity<?> getTurmasPorDisciplina(@PathVariable Long disciplinaId) {
-         List<Turma> turmas = turmaService.findByDisciplinaId(disciplinaId);
-         return ResponseEntity.ok(turmas);
-     }
-
-     // Classe interna para resposta padrão
-     public static class ApiResponse {
-         private boolean success;
-         private String message;
-         private Object data;
-         public ApiResponse(boolean success, String message, Object data) {
-             this.success = success;
-             this.message = message;
-             this.data = data;
-         }
-         public boolean isSuccess() { return success; }
-         public String getMessage() { return message; }
-         public Object getData() { return data; }
-     }
- }
+}

@@ -5,6 +5,7 @@ import com.fontineleantunes.apirestful.repository.InscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import com.fontineleantunes.apirestful.repository.InscricaoRepository;
 
 @Service
 public class InscricaoService {
@@ -22,10 +23,5 @@ public class InscricaoService {
     // Retorna todas as inscricoes associadas a uma turma
     public List<com.fontineleantunes.apirestful.model.Inscricao> findByTurmaId(Long turmaId) {
         return inscricaoRepository.findByTurma_Id(turmaId);
-    }
-
-    // Retorna todas as inscricoes associadas a uma turma ordenadas pelo id desc
-    public List<com.fontineleantunes.apirestful.model.Inscricao> findByTurmaIdOrderByIdDesc(Long turmaId) {
-        return inscricaoRepository.findByTurma_IdOrderByIdDesc(turmaId);
     }
 }
