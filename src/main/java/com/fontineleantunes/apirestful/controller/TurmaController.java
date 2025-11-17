@@ -75,7 +75,6 @@ public class TurmaController {
         }
     }
 
-    // Agora suporta query param ?disciplinaId= para filtro eficiente pelo backend
     @GetMapping
     public ResponseEntity<?> listAll(@RequestParam(value = "disciplinaId", required = false) Long disciplinaId) {
         List<Turma> turmas;
@@ -117,7 +116,6 @@ public class TurmaController {
         }).orElse(ResponseEntity.status(404).body(new ApiResponse(false, "Turma não encontrada", null)));
     }
 
-    // Novo endpoint para retornar todos os alunos de uma turma (ordenados pelo id da inscrição desc)
     @GetMapping("/{id}/alunos")
     public ResponseEntity<?> getAlunosPorTurma(@PathVariable Long id) {
         java.util.List<com.fontineleantunes.apirestful.model.Inscricao> inscricoes = inscricaoService.findByTurmaIdOrderByIdDesc(id);
@@ -130,7 +128,6 @@ public class TurmaController {
         return ResponseEntity.ok(new ApiResponse(true, "Alunos da turma", alunos));
     }
 
-    // Endpoint solicitado: lista alunos que NÃO estão inscritos na turma — otimiza chamada do front
     @GetMapping("/{id}/alunos-nao-inscritos")
     public ResponseEntity<?> getAlunosNaoInscritos(@PathVariable Long id) {
         java.util.List<com.fontineleantunes.apirestful.model.Aluno> alunos = alunoService.findAlunosNotInTurma(id);

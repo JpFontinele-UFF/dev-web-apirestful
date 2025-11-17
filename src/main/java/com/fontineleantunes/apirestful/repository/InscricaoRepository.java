@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
-	// Busca todas as inscri��es pertencentes a uma turma
 	List<Inscricao> findByTurma_Id(Long turmaId);
 
 	// Recupera inscricoes de uma turma ordenadas pelo id (desc), para exibir o mais recente primeiro

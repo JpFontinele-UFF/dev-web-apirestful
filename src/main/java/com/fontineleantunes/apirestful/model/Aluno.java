@@ -10,6 +10,7 @@ public class Aluno {
     private Long id;
     private String nome;
     private String email;
+    @Column(unique = true)
     private String cpf;
 
     public Aluno() {}
