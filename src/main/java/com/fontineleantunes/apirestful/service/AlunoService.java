@@ -2,6 +2,7 @@ package com.fontineleantunes.apirestful.service;
 
 import com.fontineleantunes.apirestful.model.Aluno;
 import com.fontineleantunes.apirestful.repository.AlunoRepository;
+import com.fontineleantunes.apirestful.exception.CpfJaUtilizadoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,20 @@ public class AlunoService {
     }
 
     public Aluno save(Aluno aluno) {
+        // Validação de CPF: no create verificar existência, no update verificar conflito com outro registro
+        if (aluno.getCpf() != null) {
+            if (aluno.getId() == null) {
+                // criação
+                if (alunoRepository.existsByCpf(aluno.getCpf())) {
+                    throw new CpfJaUtilizadoException("esse cpf ja foi utilizado");
+                }
+            } else {
+                // atualização
+                if (alunoRepository.existsByCpfAndIdNot(aluno.getCpf(), aluno.getId())) {
+                    throw new CpfJaUtilizadoException("esse cpf ja foi utilizado");
+                }
+            }
+        }
         return alunoRepository.save(aluno);
     }
 

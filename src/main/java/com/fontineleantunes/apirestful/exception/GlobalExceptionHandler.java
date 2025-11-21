@@ -9,7 +9,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<String> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(false, e.getMessage(), null));
+    }
+
+    // Handler para CPF já utilizado — retorna ErrorResponse com status 400
+    @ExceptionHandler(CpfJaUtilizadoException.class)
+    public ResponseEntity<ErrorResponse> handleCpfJaUtilizado(CpfJaUtilizadoException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(false, e.getMessage(), null));
     }
 }

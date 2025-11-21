@@ -7,10 +7,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
+import java.util.Optional;
 
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
     // Recupera alunos que NÃO estão inscritos na turma informada
     @Query("select a from Aluno a where a.id not in (select i.aluno.id from Inscricao i where i.turma.id = :turmaId)")
     List<Aluno> findAlunosNotInTurma(@Param("turmaId") Long turmaId);
+
+    // Verifica existência de CPF (para evitar duplicidade)
+    boolean existsByCpf(String cpf);
+
+    // Verifica se existe outro aluno com o mesmo CPF (usado em update)
+    boolean existsByCpfAndIdNot(String cpf, Long id);
+
+    Optional<Aluno> findByCpf(String cpf);
 }
