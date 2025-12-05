@@ -1,6 +1,9 @@
 package com.fontineleantunes.apirestful.controller;
 
 import com.fontineleantunes.apirestful.model.Aluno;
+import com.fontineleantunes.apirestful.dto.AlunoDTO;
+import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.fontineleantunes.apirestful.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +33,12 @@ public class AlunoController {
 
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Aluno aluno) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> create(@Valid @RequestBody AlunoDTO alunoDto) {
+        Aluno aluno = new Aluno();
+        aluno.setNome(alunoDto.getNome());
+        aluno.setEmail(alunoDto.getEmail());
+        aluno.setCpf(alunoDto.getCpf());
         Aluno saved = alunoService.save(aluno);
         return ResponseEntity.ok(new ApiResponse(true, "Aluno cadastrado com sucesso", saved));
     }
@@ -49,6 +57,7 @@ public class AlunoController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         if (!alunoService.findById(id).isPresent()) {
             return ResponseEntity.status(404).body(new ApiResponse(false, "Aluno não encontrado", null));
