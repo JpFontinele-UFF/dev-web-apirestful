@@ -69,7 +69,7 @@ public class AlunoController {
         }
         try {
             alunoService.deleteById(id);
-            return ResponseEntity.ok(new ApiResponse(true, "Aluno removido com sucesso", null));
+            return ResponseEntity.noContent().build();
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Não é possível remover o aluno pois ele possui inscrições vinculadas.", null));
         }

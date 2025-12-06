@@ -93,7 +93,15 @@ public class SecurityConfig {
         return (request, response, accessDeniedException) -> {
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("{\"success\": false, \"message\": \"Você não pode acessar esta ferramenta. Acesso restrito a administradores.\", \"data\": null}");
+            boolean isAlunoDelete = "DELETE".equalsIgnoreCase(request.getMethod())
+                    && request.getRequestURI() != null
+                    && request.getRequestURI().startsWith("/alunos");
+
+            String message = isAlunoDelete
+                    ? "Remoção não autorizada (403). Apenas ADMIN pode remover alunos."
+                    : "Você não tem permissão para acessar este recurso.";
+
+            response.getWriter().write("{\"message\": \"" + message + "\"}");
         };
     }
 }
