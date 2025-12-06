@@ -21,9 +21,9 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (!usuarioRepository.existsByUsername("admin")) {
+        if (!usuarioRepository.existsByUsername("admin@admin.com")) {
             Usuario admin = new Usuario(
-                    "admin",
+                    "admin@admin.com",
                     passwordEncoder.encode("admin"),
                     "Administrador",
                     Set.of(Role.ROLE_ADMIN)
@@ -32,9 +32,9 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         // garantir um usuário padrão USER de exemplo
-        if (!usuarioRepository.existsByUsername("user")) {
+        if (!usuarioRepository.existsByUsername("user@user.com")) {
             Usuario user = new Usuario(
-                    "user",
+                    "user@user.com",
                     passwordEncoder.encode("user"),
                     "Usuário Padrão",
                     Set.of(Role.ROLE_USER)

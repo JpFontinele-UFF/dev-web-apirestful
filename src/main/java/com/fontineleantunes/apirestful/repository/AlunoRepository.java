@@ -15,6 +15,12 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Query("select a from Aluno a where a.id not in (select i.aluno.id from Inscricao i where i.turma.id = :turmaId)")
     List<Aluno> findAlunosNotInTurma(@Param("turmaId") Long turmaId);
 
+    // Verifica existência de email (para evitar duplicidade)
+    boolean existsByEmail(String email);
+
+    // Verifica se existe outro aluno com o mesmo email (usado em update)
+    boolean existsByEmailAndIdNot(String email, Long id);
+
     // Verifica existência de CPF (para evitar duplicidade)
     boolean existsByCpf(String cpf);
 

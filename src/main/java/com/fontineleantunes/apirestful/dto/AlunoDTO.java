@@ -6,15 +6,15 @@ import jakarta.validation.constraints.Size;
 
 public class AlunoDTO {
 
-    @NotBlank
-    @Size(min = 3)
+    @NotBlank(message = "Nome é obrigatório")
+    @Size(min = 3, message = "Nome deve ter no mínimo 3 caracteres")
     private String nome;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email deve ser válido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "CPF é obrigatório")
     private String cpf;
 
     public AlunoDTO() {}

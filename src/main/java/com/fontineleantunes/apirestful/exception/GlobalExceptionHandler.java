@@ -23,8 +23,19 @@ public class GlobalExceptionHandler {
     // Handler para CPF já utilizado — retorna ErrorResponse com status 400
     @ExceptionHandler(CpfJaUtilizadoException.class)
     public ResponseEntity<ErrorResponse> handleCpfJaUtilizado(CpfJaUtilizadoException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("cpf", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(false, e.getMessage(), null));
+                .body(new ErrorResponse(false, "Validation failed", errors));
+    }
+
+    // Handler para Email já utilizado — retorna ErrorResponse com status 400
+    @ExceptionHandler(EmailJaUtilizadoException.class)
+    public ResponseEntity<ErrorResponse> handleEmailJaUtilizado(EmailJaUtilizadoException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("email", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(false, "Validation failed", errors));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

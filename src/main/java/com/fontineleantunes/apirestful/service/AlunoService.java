@@ -3,6 +3,7 @@ package com.fontineleantunes.apirestful.service;
 import com.fontineleantunes.apirestful.model.Aluno;
 import com.fontineleantunes.apirestful.repository.AlunoRepository;
 import com.fontineleantunes.apirestful.exception.CpfJaUtilizadoException;
+import com.fontineleantunes.apirestful.exception.EmailJaUtilizadoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +24,36 @@ public class AlunoService {
     }
 
     public Aluno save(Aluno aluno) {
-        // Validação de CPF: no create verificar existência, no update verificar conflito com outro registro
+        // Validação de CPF e Email duplicado no banco (double-check após validação no DTO)
+        // Isso é importante para evitar race conditions
         if (aluno.getCpf() != null) {
             if (aluno.getId() == null) {
                 // criação
                 if (alunoRepository.existsByCpf(aluno.getCpf())) {
-                    throw new CpfJaUtilizadoException("esse cpf ja foi utilizado");
+                    throw new CpfJaUtilizadoException("CPF já está em uso");
                 }
             } else {
                 // atualização
                 if (alunoRepository.existsByCpfAndIdNot(aluno.getCpf(), aluno.getId())) {
-                    throw new CpfJaUtilizadoException("esse cpf ja foi utilizado");
+                    throw new CpfJaUtilizadoException("CPF já está em uso");
                 }
             }
         }
+
+        if (aluno.getEmail() != null) {
+            if (aluno.getId() == null) {
+                // criação
+                if (alunoRepository.existsByEmail(aluno.getEmail())) {
+                    throw new EmailJaUtilizadoException("Email já está em uso");
+                }
+            } else {
+                // atualização
+                if (alunoRepository.existsByEmailAndIdNot(aluno.getEmail(), aluno.getId())) {
+                    throw new EmailJaUtilizadoException("Email já está em uso");
+                }
+            }
+        }
+
         return alunoRepository.save(aluno);
     }
 

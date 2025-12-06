@@ -40,16 +40,21 @@ public class AlunoController {
         aluno.setEmail(alunoDto.getEmail());
         aluno.setCpf(alunoDto.getCpf());
         Aluno saved = alunoService.save(aluno);
-        return ResponseEntity.ok(new ApiResponse(true, "Aluno cadastrado com sucesso", saved));
+        return ResponseEntity.status(201).body(new ApiResponse(true, "Aluno cadastrado com sucesso", saved));
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Aluno aluno) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody AlunoDTO alunoDto) {
         if (!alunoService.findById(id).isPresent()) {
             return ResponseEntity.status(404).body(new ApiResponse(false, "Aluno não encontrado", null));
         }
+        Aluno aluno = new Aluno();
         aluno.setId(id);
+        aluno.setNome(alunoDto.getNome());
+        aluno.setEmail(alunoDto.getEmail());
+        aluno.setCpf(alunoDto.getCpf());
         Aluno saved = alunoService.save(aluno);
         return ResponseEntity.ok(new ApiResponse(true, "Aluno alterado com sucesso", saved));
     }
