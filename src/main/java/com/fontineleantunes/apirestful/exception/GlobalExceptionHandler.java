@@ -39,11 +39,6 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(false, "Validation failed", errors));
     }
 
-    /**
-     * Handler para MethodArgumentNotValidException
-     * Captura erros de validação do Spring Validator (@Valid, @Validated)
-     * Retorna mapa campo -> mensagem de erro no formato esperado
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();

@@ -36,7 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtService.extrairUsername(jwt);
             } catch (Exception e) {
-                // token inválido; deixa seguir sem autenticação
             }
         }
 

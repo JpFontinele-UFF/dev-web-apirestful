@@ -24,8 +24,7 @@ public class AlunoService {
     }
 
     public Aluno save(Aluno aluno) {
-        // Validação de CPF e Email duplicado no banco (double-check após validação no DTO)
-        // Isso é importante para evitar race conditions
+
         if (aluno.getCpf() != null) {
             if (aluno.getId() == null) {
                 // criação

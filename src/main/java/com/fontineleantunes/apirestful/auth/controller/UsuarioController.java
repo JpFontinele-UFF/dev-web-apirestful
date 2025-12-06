@@ -23,16 +23,10 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /**
-     * Endpoint protegido apenas para ADMIN - Criar novo usuário (ADMIN ou USER)
-     * POST /auth/admin/register
-     * Body: { "username": "email@example.com", "password": "senha123", "nome": "Nome", "role": "ROLE_ADMIN" ou "ROLE_USER" }
-     */
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> criarUsuario(@RequestBody Map<String, String> body) {
-        // Validar campos obrigatórios
-        // O frontend pode enviar "email" como username
+
         String username = body.getOrDefault("username", body.get("email"));
         String password = body.get("password");
         String nome = body.get("nome");
@@ -99,10 +93,6 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Endpoint protegido apenas para ADMIN - Listar todos os usuários
-     * GET /auth/admin/usuarios
-     */
     @GetMapping("/usuarios")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> listarUsuarios() {
@@ -132,10 +122,6 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Endpoint protegido apenas para ADMIN - Obter informações do usuário atual
-     * GET /auth/admin/me
-     */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> obterUsuarioAtual() {
@@ -170,11 +156,6 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Endpoint protegido apenas para ADMIN - Atualizar usuário (nome e/ou role)
-     * PUT /auth/admin/usuarios/{id}
-     * Body: { "nome": "Novo Nome", "role": "ROLE_ADMIN" } (opcionais)
-     */
     @PutMapping("/usuarios/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody Map<String, String> body) {
@@ -237,10 +218,6 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Endpoint protegido apenas para ADMIN - Deletar usuário
-     * DELETE /auth/admin/usuarios/{id}
-     */
     @DeleteMapping("/usuarios/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deletarUsuario(@PathVariable Long id) {

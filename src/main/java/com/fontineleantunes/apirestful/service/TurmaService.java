@@ -17,8 +17,6 @@ public class TurmaService {
         return turmaRepository.save(turma);
     }
 
-    // Permite buscar uma turma pelo ID, retornando Optional<Turma>.
-    // Isso é importante para validar se a turma existe antes de criar uma inscrição ou outro vínculo.
     public Optional<Turma> findById(Long id) {
         return turmaRepository.findById(id);
     }
