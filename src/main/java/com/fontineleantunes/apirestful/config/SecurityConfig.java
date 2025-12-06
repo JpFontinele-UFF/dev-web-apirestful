@@ -65,9 +65,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/alunos/**").permitAll()
+                .requestMatchers("/auth/**").authenticated()
+                .requestMatchers("/api/auth/**").authenticated()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex
