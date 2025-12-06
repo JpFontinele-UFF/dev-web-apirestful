@@ -2,14 +2,18 @@ package com.fontineleantunes.apirestful.controller;
 
 import com.fontineleantunes.apirestful.model.Professor;
 import com.fontineleantunes.apirestful.service.ProfessorService;
+import com.fontineleantunes.apirestful.dto.ProfessorDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/professores")
+@Validated
 public class ProfessorController {
     @Autowired
     private ProfessorService professorService;
@@ -30,18 +34,26 @@ public class ProfessorController {
 
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Professor professor) {
+    public ResponseEntity<?> create(@Valid @RequestBody ProfessorDTO professorDto) {
+        Professor professor = new Professor();
+        professor.setNome(professorDto.getNome());
+        professor.setEmail(professorDto.getEmail());
+        professor.setCpf(professorDto.getCpf());
         Professor saved = professorService.save(professor);
-        return ResponseEntity.ok(new ApiResponse(true, "Professor cadastrado com sucesso", saved));
+        return ResponseEntity.status(201).body(new ApiResponse(true, "Professor cadastrado com sucesso", saved));
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Professor professor) {
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ProfessorDTO professorDto) {
         if (!professorService.findById(id).isPresent()) {
             return ResponseEntity.status(404).body(new ApiResponse(false, "Professor não encontrado", null));
         }
+        Professor professor = new Professor();
         professor.setId(id);
+        professor.setNome(professorDto.getNome());
+        professor.setEmail(professorDto.getEmail());
+        professor.setCpf(professorDto.getCpf());
         Professor saved = professorService.save(professor);
         return ResponseEntity.ok(new ApiResponse(true, "Professor alterado com sucesso", saved));
     }

@@ -7,12 +7,15 @@ import com.fontineleantunes.apirestful.dto.InscricaoDTO;
 import com.fontineleantunes.apirestful.service.InscricaoService;
 import com.fontineleantunes.apirestful.service.AlunoService;
 import com.fontineleantunes.apirestful.service.TurmaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/inscricoes")
+@Validated
 public class InscricaoController {
 
     @Autowired
@@ -24,7 +27,7 @@ public class InscricaoController {
 
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody InscricaoDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody InscricaoDTO dto) {
         Aluno aluno = null;
         Turma turma = null;
         if (dto.getAlunoId() != null) {

@@ -2,15 +2,19 @@ package com.fontineleantunes.apirestful.controller;
 
 import com.fontineleantunes.apirestful.model.Disciplina;
 import com.fontineleantunes.apirestful.service.DisciplinaService;
+import com.fontineleantunes.apirestful.dto.DisciplinaDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/disciplinas")
+@Validated
 public class DisciplinaController {
 
     @Autowired
@@ -29,14 +33,20 @@ public class DisciplinaController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse> criar(@RequestBody Disciplina disciplina) {
+    public ResponseEntity<ApiResponse> criar(@Valid @RequestBody DisciplinaDTO disciplinaDTO) {
+        Disciplina disciplina = new Disciplina();
+        disciplina.setNome(disciplinaDTO.getNome());
+        disciplina.setCodigo(disciplinaDTO.getCodigo());
         Disciplina novaDisciplina = disciplinaService.salvar(disciplina);
         ApiResponse response = new ApiResponse("Disciplina criada com sucesso", novaDisciplina);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> atualizar(@PathVariable Long id, @RequestBody Disciplina disciplina) {
+    public ResponseEntity<ApiResponse> atualizar(@PathVariable Long id, @Valid @RequestBody DisciplinaDTO disciplinaDTO) {
+        Disciplina disciplina = new Disciplina();
+        disciplina.setNome(disciplinaDTO.getNome());
+        disciplina.setCodigo(disciplinaDTO.getCodigo());
         Disciplina disciplinaAtualizada = disciplinaService.atualizar(id, disciplina);
         ApiResponse response = new ApiResponse("Disciplina atualizada com sucesso", disciplinaAtualizada);
         return ResponseEntity.ok(response);

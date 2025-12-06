@@ -3,6 +3,7 @@ package com.fontineleantunes.apirestful.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,14 +39,29 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(false, "Validation failed", errors));
     }
 
+    /**
+     * Handler para MethodArgumentNotValidException
+     * Captura erros de validação do Spring Validator (@Valid, @Validated)
+     * Retorna mapa campo -> mensagem de erro no formato esperado
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        BindingResult bindingResult = ex.getBindingResult();
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String field = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(field, message);
+        
+        // Itera sobre todos os erros de campo e constrói o mapa campo -> mensagem
+        bindingResult.getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            
+            // Se o campo já existe no mapa, concatena com separador
+            if (errors.containsKey(fieldName)) {
+                errors.put(fieldName, errors.get(fieldName) + "; " + errorMessage);
+            } else {
+                errors.put(fieldName, errorMessage);
+            }
         });
+        
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(false, "Validation failed", errors));
     }
@@ -56,3 +72,4 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(false, "Você não tem permissão para acessar este recurso.", null));
     }
 }
+

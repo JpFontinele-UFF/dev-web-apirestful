@@ -9,14 +9,17 @@ import com.fontineleantunes.apirestful.service.TurmaService;
 import com.fontineleantunes.apirestful.service.ProfessorService;
 import com.fontineleantunes.apirestful.service.DisciplinaService;
 import com.fontineleantunes.apirestful.service.AlunoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/turmas")
+@Validated
 public class TurmaController {
 
     @Autowired
@@ -31,7 +34,7 @@ public class TurmaController {
     private AlunoService alunoService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody TurmaDTO turmaDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody TurmaDTO turmaDTO) {
         Professor professor = null;
         if (turmaDTO.getProfessorId() != null) {
             professor = professorService.findById(turmaDTO.getProfessorId()).orElse(null);
