@@ -40,7 +40,7 @@ public class DataSeeder implements CommandLineRunner {
         if (!usuarioRepository.existsByUsername("user@mail.com")) {
             Usuario user = new Usuario(
                     "user@mail.com",
-                    passwordEncoder.encode("passwod"),
+                    passwordEncoder.encode("password"),
                     "Usuário Padrão",
                     Set.of(Role.ROLE_USER)
             );
